@@ -1,0 +1,224 @@
+{
+  "target_device": "low_power_reliable_fpga_next_gen",
+  "architecture_goal": "integrate high-performance IP blocks while tracking timing, clocking, reset, power, and constraint risks",
+  "ip_count": 8,
+  "total_bandwidth_gbps": 682.0,
+  "average_latency_ns": 83.75,
+  "total_area_kle": 770.0,
+  "total_power_mw": 5390.0,
+  "high_risk_count": 2,
+  "needs_review_count": 1,
+  "highest_risk_blocks": [
+    {
+      "name": "cxl_type3_endpoint",
+      "category": "CXL",
+      "risk_score": 100,
+      "readiness": "high risk",
+      "bandwidth_gbps": 96.0,
+      "latency_ns": 130.0,
+      "area_kle": 145.0,
+      "power_mw": 920.0,
+      "clock_domain_count": 3,
+      "reset_domain_count": 3,
+      "timing_slack_ns": -0.04,
+      "constraint_ready": false,
+      "review_actions": [
+        "open timing-closure review before integration freeze",
+        "run CDC review for multi-clock integration",
+        "run RDC review for reset sequencing",
+        "complete generated-clock and IO constraint package",
+        "include power and thermal budget review",
+        "track as architecture-level integration risk"
+      ]
+    },
+    {
+      "name": "high_speed_serial_transceiver",
+      "category": "HSS",
+      "risk_score": 100,
+      "readiness": "high risk",
+      "bandwidth_gbps": 112.0,
+      "latency_ns": 38.0,
+      "area_kle": 90.0,
+      "power_mw": 1120.0,
+      "clock_domain_count": 4,
+      "reset_domain_count": 3,
+      "timing_slack_ns": -0.11,
+      "constraint_ready": false,
+      "review_actions": [
+        "open timing-closure review before integration freeze",
+        "run CDC review for multi-clock integration",
+        "run RDC review for reset sequencing",
+        "complete generated-clock and IO constraint package",
+        "include power and thermal budget review",
+        "track as architecture-level integration risk"
+      ]
+    },
+    {
+      "name": "packet_noc",
+      "category": "NoC",
+      "risk_score": 51,
+      "readiness": "needs review",
+      "bandwidth_gbps": 210.0,
+      "latency_ns": 45.0,
+      "area_kle": 180.0,
+      "power_mw": 1050.0,
+      "clock_domain_count": 2,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.02,
+      "constraint_ready": true,
+      "review_actions": [
+        "watch near-zero timing slack during place and route",
+        "include power and thermal budget review"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "name": "pcie_gen5_controller",
+      "category": "PCIe",
+      "risk_score": 31,
+      "readiness": "ready",
+      "bandwidth_gbps": 128.0,
+      "latency_ns": 95.0,
+      "area_kle": 120.0,
+      "power_mw": 850.0,
+      "clock_domain_count": 3,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.12,
+      "constraint_ready": true,
+      "review_actions": [
+        "run CDC review for multi-clock integration"
+      ]
+    },
+    {
+      "name": "cxl_type3_endpoint",
+      "category": "CXL",
+      "risk_score": 100,
+      "readiness": "high risk",
+      "bandwidth_gbps": 96.0,
+      "latency_ns": 130.0,
+      "area_kle": 145.0,
+      "power_mw": 920.0,
+      "clock_domain_count": 3,
+      "reset_domain_count": 3,
+      "timing_slack_ns": -0.04,
+      "constraint_ready": false,
+      "review_actions": [
+        "open timing-closure review before integration freeze",
+        "run CDC review for multi-clock integration",
+        "run RDC review for reset sequencing",
+        "complete generated-clock and IO constraint package",
+        "include power and thermal budget review",
+        "track as architecture-level integration risk"
+      ]
+    },
+    {
+      "name": "ddr5_memory_controller",
+      "category": "DDR",
+      "risk_score": 23,
+      "readiness": "ready",
+      "bandwidth_gbps": 76.0,
+      "latency_ns": 72.0,
+      "area_kle": 100.0,
+      "power_mw": 780.0,
+      "clock_domain_count": 2,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.08,
+      "constraint_ready": true,
+      "review_actions": [
+        "ready for normal integration checklist"
+      ]
+    },
+    {
+      "name": "packet_noc",
+      "category": "NoC",
+      "risk_score": 51,
+      "readiness": "needs review",
+      "bandwidth_gbps": 210.0,
+      "latency_ns": 45.0,
+      "area_kle": 180.0,
+      "power_mw": 1050.0,
+      "clock_domain_count": 2,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.02,
+      "constraint_ready": true,
+      "review_actions": [
+        "watch near-zero timing slack during place and route",
+        "include power and thermal budget review"
+      ]
+    },
+    {
+      "name": "high_speed_serial_transceiver",
+      "category": "HSS",
+      "risk_score": 100,
+      "readiness": "high risk",
+      "bandwidth_gbps": 112.0,
+      "latency_ns": 38.0,
+      "area_kle": 90.0,
+      "power_mw": 1120.0,
+      "clock_domain_count": 4,
+      "reset_domain_count": 3,
+      "timing_slack_ns": -0.11,
+      "constraint_ready": false,
+      "review_actions": [
+        "open timing-closure review before integration freeze",
+        "run CDC review for multi-clock integration",
+        "run RDC review for reset sequencing",
+        "complete generated-clock and IO constraint package",
+        "include power and thermal budget review",
+        "track as architecture-level integration risk"
+      ]
+    },
+    {
+      "name": "parallel_io_subsystem",
+      "category": "Parallel IO",
+      "risk_score": 13,
+      "readiness": "ready",
+      "bandwidth_gbps": 24.0,
+      "latency_ns": 18.0,
+      "area_kle": 42.0,
+      "power_mw": 310.0,
+      "clock_domain_count": 2,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.34,
+      "constraint_ready": true,
+      "review_actions": [
+        "ready for normal integration checklist"
+      ]
+    },
+    {
+      "name": "envm_boot_controller",
+      "category": "eNVM",
+      "risk_score": 13,
+      "readiness": "ready",
+      "bandwidth_gbps": 4.0,
+      "latency_ns": 260.0,
+      "area_kle": 35.0,
+      "power_mw": 120.0,
+      "clock_domain_count": 2,
+      "reset_domain_count": 2,
+      "timing_slack_ns": 0.21,
+      "constraint_ready": true,
+      "review_actions": [
+        "ready for normal integration checklist"
+      ]
+    },
+    {
+      "name": "esram_scratchpad",
+      "category": "eSRAM",
+      "risk_score": 0,
+      "readiness": "ready",
+      "bandwidth_gbps": 32.0,
+      "latency_ns": 12.0,
+      "area_kle": 58.0,
+      "power_mw": 240.0,
+      "clock_domain_count": 1,
+      "reset_domain_count": 1,
+      "timing_slack_ns": 0.42,
+      "constraint_ready": true,
+      "review_actions": [
+        "ready for normal integration checklist"
+      ]
+    }
+  ]
+}

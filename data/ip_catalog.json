@@ -1,0 +1,111 @@
+{
+  "target_device": "low_power_reliable_fpga_next_gen",
+  "architecture_goal": "integrate high-performance IP blocks while tracking timing, clocking, reset, power, and constraint risks",
+  "ip_blocks": [
+    {
+      "name": "pcie_gen5_controller",
+      "category": "PCIe",
+      "bandwidth_gbps": 128,
+      "latency_ns": 95,
+      "area_kle": 120,
+      "power_mw": 850,
+      "clock_domains": ["core_clk", "pcie_refclk", "axi_clk"],
+      "reset_domains": ["por_reset", "pcie_reset"],
+      "timing_slack_ns": 0.12,
+      "constraint_ready": true,
+      "integration_notes": ["requires hardened PHY handoff", "AXI bridge needs CDC review"]
+    },
+    {
+      "name": "cxl_type3_endpoint",
+      "category": "CXL",
+      "bandwidth_gbps": 96,
+      "latency_ns": 130,
+      "area_kle": 145,
+      "power_mw": 920,
+      "clock_domains": ["core_clk", "cxl_refclk", "mem_clk"],
+      "reset_domains": ["por_reset", "link_reset", "mem_reset"],
+      "timing_slack_ns": -0.04,
+      "constraint_ready": false,
+      "integration_notes": ["tight timing path in coherency bridge", "needs updated generated clocks"]
+    },
+    {
+      "name": "ddr5_memory_controller",
+      "category": "DDR",
+      "bandwidth_gbps": 76,
+      "latency_ns": 72,
+      "area_kle": 100,
+      "power_mw": 780,
+      "clock_domains": ["core_clk", "mem_clk"],
+      "reset_domains": ["por_reset", "mem_reset"],
+      "timing_slack_ns": 0.08,
+      "constraint_ready": true,
+      "integration_notes": ["board timing model required", "training sequence must be validated"]
+    },
+    {
+      "name": "packet_noc",
+      "category": "NoC",
+      "bandwidth_gbps": 210,
+      "latency_ns": 45,
+      "area_kle": 180,
+      "power_mw": 1050,
+      "clock_domains": ["core_clk", "noc_clk"],
+      "reset_domains": ["por_reset", "noc_reset"],
+      "timing_slack_ns": 0.02,
+      "constraint_ready": true,
+      "integration_notes": ["floorplan-sensitive routes", "QoS arbitration needs workload model"]
+    },
+    {
+      "name": "high_speed_serial_transceiver",
+      "category": "HSS",
+      "bandwidth_gbps": 112,
+      "latency_ns": 38,
+      "area_kle": 90,
+      "power_mw": 1120,
+      "clock_domains": ["refclk_156m", "tx_clk", "rx_clk", "core_clk"],
+      "reset_domains": ["por_reset", "pll_reset", "lane_reset"],
+      "timing_slack_ns": -0.11,
+      "constraint_ready": false,
+      "integration_notes": ["PLL lock sequencing", "multiple asynchronous lane resets"]
+    },
+    {
+      "name": "parallel_io_subsystem",
+      "category": "Parallel IO",
+      "bandwidth_gbps": 24,
+      "latency_ns": 18,
+      "area_kle": 42,
+      "power_mw": 310,
+      "clock_domains": ["io_clk", "core_clk"],
+      "reset_domains": ["por_reset", "io_reset"],
+      "timing_slack_ns": 0.34,
+      "constraint_ready": true,
+      "integration_notes": ["package pinout dependency", "IO timing constraints reviewed"]
+    },
+    {
+      "name": "envm_boot_controller",
+      "category": "eNVM",
+      "bandwidth_gbps": 4,
+      "latency_ns": 260,
+      "area_kle": 35,
+      "power_mw": 120,
+      "clock_domains": ["cfg_clk", "core_clk"],
+      "reset_domains": ["por_reset", "cfg_reset"],
+      "timing_slack_ns": 0.21,
+      "constraint_ready": true,
+      "integration_notes": ["boot path must work before fabric init"]
+    },
+    {
+      "name": "esram_scratchpad",
+      "category": "eSRAM",
+      "bandwidth_gbps": 32,
+      "latency_ns": 12,
+      "area_kle": 58,
+      "power_mw": 240,
+      "clock_domains": ["core_clk"],
+      "reset_domains": ["por_reset"],
+      "timing_slack_ns": 0.42,
+      "constraint_ready": true,
+      "integration_notes": ["single-domain timing is low risk"]
+    }
+  ]
+}
+

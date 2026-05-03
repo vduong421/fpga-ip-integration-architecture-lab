@@ -1,69 +1,58 @@
-﻿# FPGA IP Integration Architecture Lab
+# FPGA IP Integration Architecture Lab
 
-Project for entry-level FPGA architecture, ASIC/FPGA IP integration, hardware architecture, and EDA scripting roles.
+FPGA IP Integration Architecture Lab is a local architecture-risk tool for reviewing IP blocks, interface compatibility, clock/reset strategy, verification coverage, and integration readiness.
 
-This project models how multiple FPGA IP blocks can be compared and integrated into a product architecture. It does not claim production ASIC flow ownership. It is a project-based simulation that practices architecture tradeoffs, timing risk, clock-domain crossing risk, constraint readiness, and cross-functional reporting.
+It combines deterministic FPGA integration scoring with a local AI analyst that explains design risk and recommends next engineering actions.
 
-## Role Match
+## What It Does
 
-Best for jobs asking for:
+- Loads FPGA IP integration scenarios from sample data.
+- Scores integration risk across interfaces, clocks, resets, dependencies, and verification signals.
+- Identifies blockers and high-risk subsystems.
+- Displays a browser dashboard for architecture review.
+- Adds local AI triage guidance for engineering next steps.
 
-- FPGA architecture
-- ASIC/FPGA IP development and integration
-- PCIe, CXL, DDR, NoC, high-speed serial interfaces, eNVM, eSRAM, parallel IO
-- Synthesis, constraint management, place and route, timing closure, CDC/RDC awareness
-- Python or Tcl scripting for EDA workflows
-- Cross-functional architecture reporting
+## AI Features
 
-## Features
+- Local AI analyst explains integration risk in engineering language.
+- AI guidance references deterministic score fields and blockers.
+- Helps convert raw architecture checks into action plans.
+- Supports question-driven review from the browser UI.
 
-- Loads an FPGA IP catalog from JSON.
-- Scores each IP block for performance, power, timing risk, CDC/RDC risk, constraint readiness, and integration complexity.
-- Builds a product-level architecture summary for a selected set of IP blocks.
-- Generates JSON and Markdown reports that explain tradeoffs and debug priorities.
-- Includes sample Tcl-style constraint notes for EDA-flow familiarity.
-- Includes tests for scoring, architecture summary, and report generation.
+## Architecture
+
+```text
+IP integration data
+      |
+      v
+Deterministic risk scoring -> subsystem blockers -> readiness summary
+      |
+      v
+Local AI analyst -> triage explanation + recommended fixes
+      |
+      v
+Browser dashboard
+```
 
 ## Run
 
 ```powershell
-python src/fpga_arch_lab.py --catalog data/ip_catalog.json --output output
+run.bat
 ```
 
-## Test
+## Local AI Setup
 
-```powershell
-python -m pytest tests
-```
+Use a local OpenAI-compatible model server such as LM Studio. The project defaults to a small local model like `google/gemma-4-e4b`.
 
-## Example Output
+The risk score is deterministic and remains available without AI.
 
-The report identifies:
+## Main Files
 
-- highest-risk IP blocks
-- timing-closure risk
-- CDC/RDC risk
-- constraint-readiness gaps
-- architecture-level latency, bandwidth, area, and power summaries
-- recommended next review actions
+- `server.py` - local API and AI insight endpoint.
+- `web/index.html` - browser dashboard.
+- `agents/Agent.md` - FPGA architecture copilot instructions.
+- `samples/` - integration scenario data.
 
-## Engineering Impact
-- Built a Python FPGA IP integration architecture model that compares PCIe, CXL, DDR, NoC, high-speed serial, eNVM, eSRAM, and parallel IO blocks across latency, bandwidth, power, area, timing risk, and CDC/RDC risk.
-- Modeled architecture-readiness checks for synthesis constraints, clock domains, reset domains, timing slack, and integration complexity to mirror FPGA/ASIC product planning discussions.
-- Generated JSON and Markdown architecture reports that summarize IP tradeoffs, timing-closure risks, and cross-functional review actions.
+## Output
 
-## Project Workbench
-
-Launch the production-style desktop workbench with:
-
-```powershell
-launch-workbench.bat
-```
-
-What it adds:
-
-- Local-first AI copilot using `google/gemma-4-e4b` by default
-- Operator-focused workbench for reviewing real project inputs and outputs
-- System design, production-impact, and operational brief generation on demand
-- Grounded responses based on this project's README, sample files, and deterministic outputs
-
+The tool produces integration readiness scores, blocker summaries, subsystem risk notes, and AI-generated triage recommendations.

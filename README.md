@@ -1,4 +1,4 @@
-# FPGA IP Integration Architecture Lab
+﻿# FPGA IP Integration Architecture Lab
 
 Project for entry-level FPGA architecture, ASIC/FPGA IP integration, hardware architecture, and EDA scripting roles.
 
@@ -47,9 +47,23 @@ The report identifies:
 - architecture-level latency, bandwidth, area, and power summaries
 - recommended next review actions
 
-## Resume Bullets
-
+## Engineering Impact
 - Built a Python FPGA IP integration architecture model that compares PCIe, CXL, DDR, NoC, high-speed serial, eNVM, eSRAM, and parallel IO blocks across latency, bandwidth, power, area, timing risk, and CDC/RDC risk.
 - Modeled architecture-readiness checks for synthesis constraints, clock domains, reset domains, timing slack, and integration complexity to mirror FPGA/ASIC product planning discussions.
 - Generated JSON and Markdown architecture reports that summarize IP tradeoffs, timing-closure risks, and cross-functional review actions.
+
+## Project Workbench
+
+Launch the production-style desktop workbench with:
+
+```powershell
+launch-workbench.bat
+```
+
+What it adds:
+
+- Local-first AI copilot using `google/gemma-4-e4b` by default
+- Operator-focused workbench for reviewing real project inputs and outputs
+- System design, production-impact, and operational brief generation on demand
+- Grounded responses based on this project's README, sample files, and deterministic outputs
 

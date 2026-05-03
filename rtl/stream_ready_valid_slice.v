@@ -1,4 +1,4 @@
-// Small ready/valid pipeline slice for interview discussion.
+// Small ready/valid pipeline slice for architecture validation.
 // This is intentionally simple RTL that shows hardware-interface thinking.
 
 module stream_ready_valid_slice #(
@@ -34,4 +34,3 @@ module stream_ready_valid_slice #(
     end
 
 endmodule
-

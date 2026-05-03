@@ -1,6 +1,6 @@
 # Example Tcl-style notes for FPGA/ASIC architecture review.
 # This is not tied to a vendor tool; it documents the constraint concepts
-# this project tracks for interview and resume discussion.
+# this project tracks for architecture review and engineering documentation.
 
 create_clock -name core_clk -period 2.500 [get_ports core_clk]
 create_clock -name pcie_refclk -period 10.000 [get_ports pcie_refclk]
@@ -19,4 +19,3 @@ set_false_path -from [get_ports por_reset] -to [all_registers]
 # - reset-domain crossings during link/PLL/boot sequencing
 # - IO timing constraints for board-level interfaces
 # - floorplan-sensitive routes for NoC and high-bandwidth IP
-

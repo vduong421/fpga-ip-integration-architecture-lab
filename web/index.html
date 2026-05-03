@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FPGA IP Integration Architecture Dashboard</title>
+<style>
+:root {
+  --bg:#f6f8fb;
+  --panel:#ffffff;
+  --soft:#f8fafc;
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+  --blue:#2563eb;
+  --red:#dc2626;
+  --amber:#d97706;
+  --green:#16a34a;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial, sans-serif;
+}
+
+header {
+  background:#0f172a;
+  color:white;
+  padding:26px 36px;
+}
+
+header h1 { margin:0; }
+header p { color:#cbd5e1; }
+
+main {
+  max-width:1320px;
+  margin:auto;
+  padding:24px;
+}
+
+.card, .kpi {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+
+.kpis {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.kpi span {
+  color:var(--muted);
+  font-size:13px;
+}
+
+.kpi strong {
+  display:block;
+  font-size:28px;
+  margin-top:8px;
+}
+
+.grid { display:grid; gap:12px; }
+
+.grid2 {
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:20px;
+}
+
+.chat {
+  display:flex;
+  gap:10px;
+}
+
+input {
+  flex:1;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  font-size:15px;
+}
+
+button {
+  background:var(--blue);
+  color:white;
+  border:0;
+  border-radius:12px;
+  padding:12px 15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.quick {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+
+.quick button {
+  background:#eff6ff;
+  color:var(--blue);
+}
+
+.box, .row {
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:13px;
+}
+
+.box b {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.chart-row {
+  display:grid;
+  grid-template-columns:190px 1fr 70px;
+  gap:10px;
+  align-items:center;
+  margin:10px 0;
+}
+
+.chart-label {
+  font-weight:bold;
+  font-size:13px;
+}
+
+.chart-track {
+  height:16px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.chart-bar {
+  height:100%;
+  background:var(--blue);
+}
+
+.chart-bar.risk { background:var(--red); }
+.chart-bar.warn { background:var(--amber); }
+.chart-bar.good { background:var(--green); }
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td {
+  text-align:left;
+  padding:12px;
+  border-bottom:1px solid var(--line);
+}
+
+th {
+  background:var(--soft);
+  color:var(--muted);
+}
+
+.pill {
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.pill.ready { background:#ecfdf5; color:var(--green); }
+.pill.review { background:#fffbeb; color:var(--amber); }
+.pill.high { background:#fef2f2; color:var(--red); }
+
+#status {
+  color:var(--amber);
+  font-weight:bold;
+}
+
+@media(max-width:900px){
+  .kpis, .grid2 { grid-template-columns:1fr; }
+  .chat { display:block; }
+  input { width:100%; margin-bottom:10px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>FPGA IP Integration Architecture Dashboard</h1>
+  <p>Deterministic FPGA IP risk scoring + local AI triage copilot.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Ask Local AI</h2>
+    <div class="chat">
+      <input id="q" placeholder="Ask about timing risk, CDC/RDC, power, constraints, or integration actions...">
+      <button onclick="ask()">Ask</button>
+    </div>
+    <div class="quick">
+      <button onclick="preset('What are the top FPGA integration risks and why?')">Top Risks</button>
+      <button onclick="preset('Which blocks need timing closure review?')">Timing Review</button>
+      <button onclick="preset('Which IP blocks need CDC or RDC review?')">CDC/RDC Review</button>
+      <button onclick="preset('What should the integration owner do next?')">Recommended Actions</button>
+    </div>
+    <p id="status"></p>
+    <div id="answer" class="grid"></div>
+  </section>
+
+  <section class="kpis">
+    <div class="kpi"><span>IP Blocks</span><strong id="ipCount">0</strong></div>
+    <div class="kpi"><span>Total Bandwidth</span><strong id="bandwidth">0</strong></div>
+    <div class="kpi"><span>Total Power</span><strong id="power">0</strong></div>
+    <div class="kpi"><span>High Risk</span><strong id="riskCount">0</strong></div>
+  </section>
+
+  <section class="card">
+    <h2>Risk Score Chart</h2>
+    <div id="riskChart"></div>
+  </section>
+
+  <section class="grid2">
+    <div>
+      <section class="card">
+        <h2>Local AI Analyst</h2>
+        <div id="analyst" class="grid"></div>
+      </section>
+
+      <section class="card">
+        <h2>IP Block Table</h2>
+        <table id="table"></table>
+      </section>
+    </div>
+
+    <aside>
+      <section class="card">
+        <h2>Power Chart</h2>
+        <div id="powerChart"></div>
+      </section>
+
+      <section class="card">
+        <h2>Timing Slack Chart</h2>
+        <div id="slackChart"></div>
+      </section>
+
+      <section class="card">
+        <h2>Readiness Breakdown</h2>
+        <div id="readiness"></div>
+      </section>
+    </aside>
+  </section>
+</main>
+
+<script>
+function box(title, value){
+  return `<div class="box"><b>${title}</b><div>${value || "-"}</div></div>`
+}
+
+function list(items){
+  if(!items || !items.length) return "-"
+  return "<ul>" + items.map(item => `<li>${item}</li>`).join("") + "</ul>"
+}
+
+function preset(q){
+  document.getElementById("q").value = q
+}
+
+function chart(title, rows, labelKey, valueKey, id, cls=""){
+  if(!rows || !rows.length){
+    document.getElementById(id).innerHTML = "<p>No data</p>"
+    return
+  }
+
+  const max = Math.max(...rows.map(row => Math.abs(row[valueKey])), 1)
+  document.getElementById(id).innerHTML =
+    rows.map(row => {
+      const value = row[valueKey]
+      const width = Math.max(4, Math.round((Math.abs(value) / max) * 100))
+      return `
+        <div class="chart-row">
+          <div class="chart-label">${row[labelKey]}</div>
+          <div class="chart-track"><div class="chart-bar ${cls}" style="width:${width}%"></div></div>
+          <div>${value}</div>
+        </div>
+      `
+    }).join("")
+}
+
+function readinessPill(value){
+  if(value === "high risk") return `<span class="pill high">High Risk</span>`
+  if(value === "needs review") return `<span class="pill review">Needs Review</span>`
+  return `<span class="pill ready">Ready</span>`
+}
+
+async function load(){
+  const res = await fetch("/api")
+  const d = await res.json()
+
+  document.getElementById("ipCount").innerText = d.ip_count
+  document.getElementById("bandwidth").innerText = d.total_bandwidth_gbps + " Gbps"
+  document.getElementById("power").innerText = d.total_power_mw + " mW"
+  document.getElementById("riskCount").innerText = d.high_risk_count
+
+  chart("Risk", d.blocks, "name", "risk_score", "riskChart", "risk")
+  chart("Power", d.blocks, "name", "power_mw", "powerChart", "warn")
+  chart("Slack", d.blocks, "name", "timing_slack_ns", "slackChart", "good")
+
+  const ai = d.ai_copilot || {}
+  document.getElementById("analyst").innerHTML =
+    box("Result", ai.result) +
+    box("Recommendation", ai.recommendation) +
+    box("Decision", ai.decision) +
+    box("Executive Summary", ai.executive_summary) +
+    box("Top Risks", list(ai.top_risks)) +
+    box("Operator Actions", list(ai.operator_actions))
+
+  const readiness = d.deterministic_reasoning.readiness_counts || {}
+  document.getElementById("readiness").innerHTML = Object.entries(readiness)
+    .map(([name, count]) => `<div class="row"><span>${name}</span><strong>${count}</strong></div>`)
+    .join("")
+
+  let rows = `<tr><th>IP Block</th><th>Category</th><th>Risk</th><th>Readiness</th><th>Slack</th><th>Power</th><th>Clock Domains</th><th>Reset Domains</th></tr>`
+  d.blocks.forEach(block => {
+    rows += `<tr>
+      <td><b>${block.name}</b></td>
+      <td>${block.category}</td>
+      <td>${block.risk_score}</td>
+      <td>${readinessPill(block.readiness)}</td>
+      <td>${block.timing_slack_ns} ns</td>
+      <td>${block.power_mw} mW</td>
+      <td>${block.clock_domain_count}</td>
+      <td>${block.reset_domain_count}</td>
+    </tr>`
+  })
+  document.getElementById("table").innerHTML = rows
+}
+
+async function ask(){
+  const q = document.getElementById("q").value
+  document.getElementById("status").innerText = "Running Local AI..."
+  document.getElementById("answer").innerHTML = ""
+
+  try {
+    const res = await fetch("/ask", {method:"POST", body:q})
+    const d = await res.json()
+
+    document.getElementById("status").innerText = "Local AI Finished"
+    document.getElementById("answer").innerHTML =
+      box("Answer", d.answer) +
+      box("Evidence", d.evidence) +
+      box("Next Action", d.next_action) +
+      box("Recommendation", d.recommendation) +
+      box("Decision", d.decision) +
+      box("Risks", list(d.risks)) +
+      box("Operator Actions", list(d.operator_actions))
+  } catch(e) {
+    document.getElementById("status").innerText = "Local AI Failed"
+    document.getElementById("answer").innerHTML = box("Fallback", "Could not reach FPGA AI endpoint.")
+  }
+}
+
+load()
+</script>
+</body>
+</html>

@@ -2,6 +2,10 @@
 
 FPGA IP Integration Architecture Lab is a local architecture-risk tool for reviewing IP blocks, interface compatibility, clock/reset strategy, verification coverage, and integration readiness.
 
+## Product Screenshot
+
+![Product screenshot](assets/product-screenshot.png)
+
 It combines deterministic FPGA integration scoring with a local AI analyst that explains design risk and recommends next engineering actions.
 
 ## What It Does
